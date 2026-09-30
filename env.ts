@@ -13,6 +13,7 @@ if (isDevelopment) {
   loadEnv('test')
 }
 
+console.log(`Running in ${process.env.NODE_ENV} mode`)
 const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
@@ -24,7 +25,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().startsWith('postgresql://'),
   JWT_SECRET: z.string().min(32, 'Must be 32 chars long'),
   JWT_EXPIRES_IN: z.string().default('7d'),
-  BCRYPT_ROUNDS: z.coerce.number().min(10).max(20).default(12),
+  BCRYPT_SALT_ROUNDS: z.coerce.number().min(10).max(20).default(12),
 })
 
 export type Env = z.infer<typeof envSchema>
@@ -44,7 +45,7 @@ try {
 
     process.exit(1)
   }
-
+  console.log('Unexpected error while parsing env vars')
   throw e
 }
 
